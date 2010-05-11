@@ -46,7 +46,6 @@ task :tracemonkey do
     end
 
     if !File.exists?('libjs_static.a')
-        puts Dir.pwd
         sh './compile.sh'
     end
 
