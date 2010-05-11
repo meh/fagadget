@@ -6,8 +6,8 @@ NAME    = 'fagadget'
 RELEASE = '0.0.1'
 
 CC      = 'gcc'
-CFLAGS  = "-Os -Wall -Wextra -pedantic #{`pkg-config --cflags gtk+-2.0`.strip} -Itracemonkey/js/src"
-LDFLAGS = "-s #{`pkg-config --libs gtk+-2.0`.strip} -Ltracemonkey/js/src -static -ljs_static"
+CFLAGS  = "-Os -Wall -Wextra -pedantic #{`pkg-config --cflags gtk+-2.0`.strip} #{`nspr-config --cflags`.strip} -Itracemonkey/js/src"
+LDFLAGS = "-s #{`pkg-config --libs gtk+-2.0`.strip} #{`nspr-config --libs`.strip} -Ltracemonkey/js/src -ljs_static"
 
 SOURCES = FileList['sources/**/*.c']
 OBJECTS = SOURCES.ext('o')
