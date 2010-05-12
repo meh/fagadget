@@ -5,12 +5,15 @@ require 'rake/clean'
 NAME    = 'fagadget'
 RELEASE = '0.0.1'
 
-CC      = 'gcc'
+CC      = 'g++'
 CFLAGS  = "-Os -Wall -Wextra -pedantic #{`pkg-config --cflags gtk+-2.0`.strip} #{`nspr-config --cflags`.strip} -Itracemonkey/js/src"
 LDFLAGS = "-s #{`pkg-config --libs gtk+-2.0`.strip} #{`nspr-config --libs`.strip} -Ltracemonkey/js/src -ljs_static"
 
 SOURCES = FileList['sources/**/*.c']
 OBJECTS = SOURCES.ext('o')
+
+CLEAN.include(OBJECTS)
+CLOBBER.include(NAME)
 
 task :default => NAME
 
@@ -65,5 +68,5 @@ end
 task :compile => [:tracemonkey, :dependencies].concat(OBJECTS)
 
 file NAME => :compile do
-    sh "#{CC} #{CFLAGS} #{LDFLAGS} #{OBJECTS} -o #{NAME}"
+    sh "#{CC} #{CFLAGS} #{OBJECTS} -o #{NAME} #{LDFLAGS}"
 end

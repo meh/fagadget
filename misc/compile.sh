@@ -20,7 +20,7 @@ fi
 
 (autoconf-2.13 || autoconf2.13 || autoconf213) &> /dev/null
 
-CONFIGURE='./configure --with-system-nspr --enable-threadsafe'
+CONFIGURE='./configure --with-system-nspr --enable-static --enable-threadsafe --enable-optimize=-Os'
 
 if [[ $DEBUG ]]; then
     CONFIGURE="$CONFIGURE --enable-debug --enable-gczeal"
