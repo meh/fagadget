@@ -17,23 +17,17 @@
 * along with fagadget. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef _FAGADGET_UTILS_H
-#define _FAGADGET_UTILS_H
+#include "Applet.h"
 
+#include <map>
 #include <string>
-#include <cstdlib>
 
 namespace fagadget {
 
-namespace Utils {
-
-static inline int toInt (std::string number)
+Applet::Applet (void)
 {
-    return std::atoi(number.c_str());
 }
 
-}
+std::map<std::string, Applet*> Applets;
 
 }
-
-#endif

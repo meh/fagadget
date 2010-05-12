@@ -1,3 +1,5 @@
+#include <fagadget.h>
+
 #include <gtk/gtk.h>
 #include <cairo.h>
 

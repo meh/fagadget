@@ -17,6 +17,9 @@
 * along with fagadget. If not, see <http://www.gnu.org/licenses/>.
 */
 
+#ifndef _FAGADGET_UTILS_OPTIONS_H
+#define _FAGADGET_UTILS_OPTIONS_H
+
 #include "Utils.h"
 
 #include <map>
@@ -40,3 +43,5 @@ class Options
 }
 
 }
+
+#endif

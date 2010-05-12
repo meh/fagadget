@@ -87,6 +87,7 @@ task :binary => OBJECTS
 MODULES.each {|name, data|
     library = to_library(name.to_s)
 
+    # this has to be fixed, if the module's source gets updated it doesn't get recompiled
     file "modules/#{library}" do
         data[:dependencies].each {|dependency|
             have_library(dependency) or raise "You're missing some dependencies :("
