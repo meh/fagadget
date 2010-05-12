@@ -2,22 +2,49 @@ require 'mkmf'
 require 'rake'
 require 'rake/clean'
 
+def to_library (name)
+    "lib#{name}.so"
+end
+
 NAME    = 'fagadget'
 RELEASE = '0.0.1'
 
 CC      = 'g++'
-CFLAGS  = "-Os -Wall -Wextra -pedantic #{`pkg-config --cflags gtk+-2.0`.strip} #{`nspr-config --cflags`.strip} -Itracemonkey/js/src"
-LDFLAGS = "-s #{`pkg-config --libs gtk+-2.0`.strip} #{`nspr-config --libs`.strip} -Ltracemonkey/js/src -ljs_static"
+CFLAGS  = "-Os -Wall -Wextra -Wno-long-long -pedantic #{`pkg-config --cflags gtk+-2.0`.strip} #{`nspr-config --cflags`.strip} -Itracemonkey/js/src -Iinclude"
+LDFLAGS = "#{`nspr-config --libs`.strip} -Ltracemonkey/js/src -ljs_static"
 
-SOURCES = FileList['sources/**/*.c']
+SOURCES = FileList['sources/**/*.cpp']
 OBJECTS = SOURCES.ext('o')
 
+MODULE_CFLAGS  = "-Os -Wall -Wextra -Wno-long-long -pedantic -Iinclude #{`nspr-config --cflags`.strip}"
+MODULE_LDFLAGS = "#{`nspr-config --libs`.strip} -export-dynamic"
+
+MODULES = {
+    'gtk' => {
+        :dependencies => ['gtk-x11-2.0', 'glib-2.0', 'cairo'],
+        :cflags       => `pkg-config --cflags gtk+-2.0`.strip,
+        :ldflags      => `pkg-config --libs gtk+-2.0`.strip,
+    },
+}
+
+MODULES_OBJECTS = MODULES.map {|name, data|
+    "modules/#{to_library(name.to_s)}"
+}
+
 CLEAN.include(OBJECTS)
-CLOBBER.include(NAME)
+CLOBBER.include([NAME] + MODULES_OBJECTS)
+
+
+if ENV['DEBUG']
+    CFLAGS        << ' -g3'
+    MODULE_CFLAGS << ' -g3'
+else
+    LDFLAGS << ' -s'
+end
 
 task :default => NAME
 
-rule '.o' => '.c' do |t|
+rule '.o' => '.cpp' do |t|
     sh "#{CC} #{CFLAGS} -o #{t.name} -c #{t.source}"
 end
 
@@ -55,17 +82,23 @@ task :tracemonkey do
     Dir.chdir(dir)
 end
 
-task :dependencies do
-    begin
-        have_library('gtk-x11-2.0') or raise 1
-        have_library('glib-2.0')    or raise 2
-        have_library('cairo')       or raise 3
-    rescue
-        raise "You're missing some dependencies :("
-    end
-end
+task :binary => OBJECTS
 
-task :compile => [:tracemonkey, :dependencies].concat(OBJECTS)
+MODULES.each {|name, data|
+    library = to_library(name.to_s)
+
+    file "modules/#{library}" do
+        data[:dependencies].each {|dependency|
+            have_library(dependency) or raise "You're missing some dependencies :("
+        }
+
+        sh "#{CC} -fpic #{MODULE_CFLAGS} #{data[:cflags]} -shared -Wl,-soname,#{library} -o modules/#{library} modules/#{name}.cpp #{MODULE_LDFLAGS} #{data[:ldflags]}"
+    end
+}
+
+task :modules => MODULES_OBJECTS
+
+task :compile => [:tracemonkey, :binary, :modules]
 
 file NAME => :compile do
     sh "#{CC} #{CFLAGS} #{OBJECTS} -o #{NAME} #{LDFLAGS}"

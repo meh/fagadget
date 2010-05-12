@@ -1,15 +1,22 @@
-#include <jsapi.h>
+#include <fagadget.h>
+
 #include <gtk/gtk.h>
+#include <cairo.h>
+
+extern "C" {
 
 int
-main (int argc, char** argv)
+init (int* argc, char*** argv)
 {
-    JSRuntime* runtime = JS_NewRuntime(8L * 1024L * 1024L);
+    return gtk_init_check(argc, argv);
+}
+
+#if 0
+
+    gtk_init(&argc, &argv);
 
     GtkWidget* win1;
     GtkWidget* win2;
-
-    gtk_init(&argc, &argv);
 
     win1 = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     win2 = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -18,8 +25,6 @@ main (int argc, char** argv)
     gtk_widget_show_all(win2);
 
     gtk_main();
+#endif
 
-    JS_DestroyRuntime(runtime);
-
-    return 0;
 }
