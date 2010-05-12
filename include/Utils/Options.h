@@ -31,7 +31,7 @@ class Options
   public:
     Options (int argc, char** argv);
 
-    std::string operator [] (std::string name);
+    std::string& operator [] (std::string name);
 
   private:
     std::map<std::string, std::string> _options;

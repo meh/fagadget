@@ -30,7 +30,7 @@ Options::Options (int argc, char** argv)
     }
 }
 
-std::string
+std::string&
 Options::operator [] (std::string name)
 {
     return _options[name];

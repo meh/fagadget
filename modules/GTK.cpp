@@ -1,5 +1,3 @@
-#include <fagadget.h>
-
 #include <gtk/gtk.h>
 #include <cairo.h>
 
@@ -25,6 +23,7 @@ initialize (int* argc, char*** argv)
     gtk_widget_show_all(win2);
 
     gtk_main();
+
 #endif
 
 }

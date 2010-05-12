@@ -20,7 +20,7 @@ MODULE_CFLAGS  = "-Os -Wall -Wextra -Wno-long-long -pedantic -Iinclude #{`nspr-c
 MODULE_LDFLAGS = "#{`nspr-config --libs`.strip} -export-dynamic"
 
 MODULES = {
-    'gtk' => {
+    'GTK' => {
         :dependencies => ['gtk-x11-2.0', 'glib-2.0', 'cairo'],
         :cflags       => `pkg-config --cflags gtk+-2.0`.strip,
         :ldflags      => `pkg-config --libs gtk+-2.0`.strip,
@@ -92,7 +92,7 @@ MODULES.each {|name, data|
             have_library(dependency) or raise "You're missing some dependencies :("
         }
 
-        sh "#{CC} -fpic #{MODULE_CFLAGS} #{data[:cflags]} -shared -Wl,-soname,#{library} -o modules/#{library} modules/#{name}.cpp #{MODULE_LDFLAGS} #{data[:ldflags]}"
+        sh "#{CC} -fPIC #{MODULE_CFLAGS} #{data[:cflags]} -shared -Wl,-soname,#{library} -o modules/#{library} modules/#{name}.cpp #{MODULE_LDFLAGS} #{data[:ldflags]}"
     end
 }
 

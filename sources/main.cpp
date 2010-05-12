@@ -31,6 +31,10 @@ main (int argc, char** argv)
 {
     Utils::Options options(argc, argv);
 
+    if (options["toolkit"].empty()) {
+        options["toolkit"] = "GTK";
+    }
+
     try {
         Engine engine(Utils::toInt(options["heap"]));
         Module module(options["toolkit"], options["modules"]);
