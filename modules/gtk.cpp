@@ -6,7 +6,7 @@
 extern "C" {
 
 int
-init (int* argc, char*** argv)
+initialize (int* argc, char*** argv)
 {
     return gtk_init_check(argc, argv);
 }
